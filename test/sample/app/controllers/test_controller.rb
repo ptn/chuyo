@@ -5,6 +5,10 @@ module Controllers
     def act
       'done'
     end
+
+    def template
+      render :test, name: 'chuyo'
+    end
   end
 end
 

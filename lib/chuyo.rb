@@ -1,3 +1,6 @@
+require 'erubis'
+
+require_relative 'chuyo/utils'
 require_relative 'chuyo/controller'
 require_relative 'chuyo/router'
 

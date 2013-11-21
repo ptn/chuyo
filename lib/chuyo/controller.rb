@@ -10,6 +10,10 @@ module Chuyo
           [404, { 'Content-Type' => 'text/plain' }, ['Not Found']]
         end
       end
+
+      def snake_name
+        Utils.to_snake(name)
+      end
     end
 
     def initialize(request, *args)
@@ -24,6 +28,16 @@ module Chuyo
         text = self.public_send(name)
         [200, { 'Content-Type' => 'text/html' }, [text]]
       end
+    end
+
+    def render(name, locals)
+      # example snake_name: controllers_test
+      # 11..-1 removes 'controllers_'
+      dir = self.class.snake_name[11..-1]
+      file = File.join('app', 'views', dir, "#{name}.html.erb")
+      src = File.read(file)
+      template = Erubis::Eruby.new(src)
+      template.result(locals)
     end
 
     private
