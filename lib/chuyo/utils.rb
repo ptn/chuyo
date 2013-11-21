@@ -9,5 +9,15 @@ module Chuyo
         tr("-", "_").
         downcase
     end
+
+    def class_snake_name(name)
+      full = to_snake(name)
+      discard = full.rindex('/')
+      if discard
+        full[(discard + 1)..-1]
+      else
+        full
+      end
+    end
   end
 end
