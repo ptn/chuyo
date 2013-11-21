@@ -1,3 +1,3 @@
 require "./app"
 
-run Test.new
+run App.new

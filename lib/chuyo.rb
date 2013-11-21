@@ -1,3 +1,4 @@
+require_relative 'chuyo/controller'
 require_relative 'chuyo/router'
 
 module Chuyo
@@ -10,8 +11,8 @@ module Chuyo
     def appinit(*args); end
 
     def call(env)
-      handler = router.dispatch(env['URL_INFO'])
       request = Rack::Request.new(env)
+      handler = router.dispatch(request)
       handler.call(request)
     end
 
