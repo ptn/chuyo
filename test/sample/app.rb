@@ -1,3 +1,5 @@
 require '../../lib/chuyo'
 
-class Test < Chuyo::App; end
+class Test
+  include Chuyo::App
+end
