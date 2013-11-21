@@ -24,13 +24,28 @@ module Chuyo
     def controllerinit(*args); end
 
     def action(name)
-      text = proc do
-        text = self.public_send(name)
-        [200, { 'Content-Type' => 'text/html' }, [text]]
-      end
+      proc { self.public_send(name) }
     end
 
-    def render(name, locals)
+    def response(text, status=200, headers={})
+      @response if @response
+      @response = Rack::Response.new(text, status, headers)
+    end
+
+    def render(name, locals, status=200, headers={ 'Content-Type' => 'text/html' })
+      text = render_template(name, locals)
+      response(text, status, headers)
+    end
+
+    def params
+      request.params
+    end
+
+    private
+
+    attr_reader :request
+
+    def render_template(name, locals)
       # example snake_name: controllers_test
       # 11..-1 removes 'controllers_'
       dir = self.class.snake_name[11..-1]
@@ -39,9 +54,5 @@ module Chuyo
       template = Erubis::Eruby.new(src)
       template.result(locals)
     end
-
-    private
-
-    attr_reader :request
   end
 end

@@ -16,7 +16,8 @@ module Chuyo
     def call(env)
       request = Rack::Request.new(env)
       handler = router.dispatch(request)
-      handler.call(request)
+      response = handler.call(request)
+      response.to_a
     end
 
     private
