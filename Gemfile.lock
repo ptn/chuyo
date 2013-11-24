@@ -1,0 +1,19 @@
+PATH
+  remote: .
+  specs:
+    chuyo (0.0.1)
+      erubis
+      rack
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    erubis (2.7.0)
+    rack (1.5.2)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  bundler (~> 1.3)
+  chuyo!
