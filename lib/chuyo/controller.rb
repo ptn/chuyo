@@ -7,6 +7,8 @@ module Chuyo
     end
 
     module ClassMethods
+      extend self
+
       def not_found
         proc do
           [404, { 'Content-Type' => 'text/plain' }, ['Not Found']]

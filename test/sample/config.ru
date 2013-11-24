@@ -1,3 +1,3 @@
 require "./app"
 
-run App.new
+run Sample::App.new

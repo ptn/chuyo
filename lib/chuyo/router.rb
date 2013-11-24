@@ -5,7 +5,7 @@ module Chuyo
       _, controller, action, after = request.path_info.split('/', 4)
 
       controller = "home" unless controller != ''
-      controller = 'Controllers::' + controller.capitalize
+      controller = APPNAME + '::Controllers::' + controller.capitalize
       controller_klass = Object.const_get(controller)
       controller = controller_klass.new(request)
 
@@ -13,7 +13,7 @@ module Chuyo
 
       controller.action(action)
     rescue NameError
-      Controllers::Base.not_found
+      Chuyo::Controller::ClassMethods.not_found
     end
   end
 end
