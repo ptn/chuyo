@@ -25,10 +25,10 @@ module Chuyo
 
     def initialize(router=Router, *args)
       @router = router.with_routes(self.class.routes)
-      appinit(*args)
+      post_initialize(*args)
     end
 
-    def appinit(*args); end
+    def post_initialize(*args);end
 
     def call(env)
       request = Rack::Request.new(env)

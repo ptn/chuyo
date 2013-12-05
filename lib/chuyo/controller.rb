@@ -18,10 +18,10 @@ module Chuyo
 
     def initialize(request, *args)
       @request = request
-      controllerinit(*args)
+      post_initialize(*args)
     end
 
-    def controllerinit(*args); end
+    def post_initialize(*args);end
 
     def params
       request.params
