@@ -16,16 +16,15 @@ module Chuyo
       end
     end
 
-    def initialize(request, *args)
+    attr_reader :params
+
+    def initialize(request, defaults, *args)
       @request = request
+      @params = request.params.merge(defaults)
       post_initialize(*args)
     end
 
     def post_initialize(*args);end
-
-    def params
-      request.params
-    end
 
     def action(name)
       proc { self.public_send(name) }

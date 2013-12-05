@@ -15,8 +15,12 @@ module Chuyo
 
         match_data = regexp_match?(request.path_info)
         if match_data
-          controller, action = get_controller_and_action(match_data)
-          handler = controller.new(request, defaults)
+          controller = get_controller(match_data)
+          action = get_action(match_data)
+          url_params = get_params(match_data)
+
+          params = defaults.merge(url_params)
+          handler = controller.new(request, params)
           handler.action(action)
         end
       end
@@ -55,11 +59,13 @@ module Chuyo
         regexp.match(path)
       end
 
-      def get_controller_and_action(match_data)
+      def get_controller(match_data)
         controller = @controller ? @controller : match_data[:controller]
         controller = APPNAME + '::Controllers::' + controller.capitalize
-        controller = Object.const_get(controller)
+        Object.const_get(controller)
+      end
 
+      def get_action(match_data)
         action = @action if @action
         unless action
           begin
@@ -68,8 +74,15 @@ module Chuyo
             action = 'index' unless action
           end
         end
+        action
+      end
 
-        [controller, action]
+      def get_params(match_data)
+        names = match_data.names.map { |n| n.to_sym }
+        params = Hash[names.zip(match_data.captures)]
+        params.delete :controller
+        params.delete :action
+        params
       end
     end
   end
