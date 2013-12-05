@@ -7,8 +7,24 @@ require_relative 'chuyo/router'
 
 module Chuyo
   module App
-    def initialize(router=Router.new, *args)
-      @router = router
+    def self.included(base)
+      base.extend(ClassMethods)
+    end
+
+    module ClassMethods
+      def routes(&block)
+        if block_given?
+          @routes = block
+        else
+          @routes
+        end
+      end
+    end
+
+    attr_reader :router
+
+    def initialize(router=Router, *args)
+      @router = router.with_routes(self.class.routes)
       appinit(*args)
     end
 
@@ -20,9 +36,5 @@ module Chuyo
       response = handler.call(request)
       response.to_a
     end
-
-    private
-
-    attr_reader :router
   end
 end
