@@ -27,7 +27,7 @@ module Chuyo
     def post_initialize(*args);end
 
     def action(name)
-      proc { self.public_send(name) }
+      proc { self.public_send(name).to_a }
     end
 
     def response(opts={})

@@ -21,6 +21,10 @@ Sample::App.routes do
   # route '/router/:action', 'router'
   # # Everything in the 1st param
   # route '/:controller/:action'
+  # To a different Rack app
+  route '/mounted/', proc { |env|
+    [200, { 'Content-Type' => 'text/html' }, ["mounted app"]]
+  }
 
   # Parameters
   route '/router/params/:id/:p1/:p2', 'router#with_params',

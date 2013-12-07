@@ -1,28 +1,36 @@
+require_relative 'route/app_route'
+require_relative 'route/controller_route'
+
 module Chuyo
   class Router
     class Route
       attr_reader :regexp, :defaults, :methods
 
-      def initialize(url, handler_spec, opts)
+      def self.for(url, app_spec, opts)
+        if app_spec.respond_to? :call
+          AppRoute.new(url, app_spec, opts)
+        else
+          ControllerRoute.new(url, app_spec, opts)
+        end
+      end
+
+      def initialize(url, app_spec, opts)
         @regexp = build_regexp(url)
         @defaults = opts[:defaults]
         @methods = opts[:via]
-        @controller, @action = handler_spec.split("#")
+        post_initialize(url, app_spec, opts)
       end
+
+      def post_initialize(url, app_spec, opts);end
 
       def match(request)
         return unless methods_match?(request.request_method)
-
         match_data = regexp_match?(request.path_info)
-        if match_data
-          controller = get_controller(match_data)
-          action = get_action(match_data)
-          url_params = get_params(match_data)
+        app(request, match_data) if match_data
+      end
 
-          params = defaults ? defaults.merge(url_params) : url_params
-          handler = controller.new(request, params)
-          handler.action(action)
-        end
+      def app(match_data)
+        raise NotImplementedError
       end
 
       private
@@ -57,32 +65,6 @@ module Chuyo
       def regexp_match?(path)
         path += '/' unless path[-1] == '/'
         regexp.match(path)
-      end
-
-      def get_controller(match_data)
-        controller = @controller ? @controller : match_data[:controller]
-        controller = APPNAME + '::Controllers::' + controller.capitalize
-        Object.const_get(controller)
-      end
-
-      def get_action(match_data)
-        action = @action if @action
-        unless action
-          begin
-            action = match_data[:action]
-          rescue IndexError
-            action = 'index' unless action
-          end
-        end
-        action
-      end
-
-      def get_params(match_data)
-        names = match_data.names.map { |n| n.to_sym }
-        params = Hash[names.zip(match_data.captures)]
-        params.delete :controller
-        params.delete :action
-        params
       end
     end
   end

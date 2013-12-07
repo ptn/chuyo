@@ -16,21 +16,21 @@ module Chuyo
     end
 
     def route(url, handler='', opts={})
-      routes << Route.new(url, handler, opts)
+      routes << Route.for(url, handler, opts)
     end
 
     def dispatch(request)
-      handler = nil
+      app = nil
 
       routes.each do |route|
-        handler = route.match(request)
-        break if handler
+        app = route.match(request)
+        break if app
       end
 
-      if handler.nil?
+      if app.nil?
         Chuyo::Controller::ClassMethods.not_found
       else
-        handler
+        app
       end
     end
   end

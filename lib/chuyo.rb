@@ -32,8 +32,9 @@ module Chuyo
 
     def call(env)
       request = Rack::Request.new(env)
-      handler = router.dispatch(request)
-      response = handler.call(request)
+      app = router.dispatch(request)
+      # Send the vanilla env since this might be a mounted Rack app.
+      response = app.call(env)
       response.to_a
     end
   end
