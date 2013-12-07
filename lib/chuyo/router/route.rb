@@ -19,7 +19,7 @@ module Chuyo
           action = get_action(match_data)
           url_params = get_params(match_data)
 
-          params = defaults.merge(url_params)
+          params = defaults ? defaults.merge(url_params) : url_params
           handler = controller.new(request, params)
           handler.action(action)
         end
